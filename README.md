@@ -1,7 +1,7 @@
 # Sistema Quiz Java
 Sistema de perguntas e respostas feito em Java.
 
-<h4>Levantamento de requisitos</h4>
+<h3>Levantamento de requisitos</h3>
 
 <ul>
 	<li>Interface: </li>
