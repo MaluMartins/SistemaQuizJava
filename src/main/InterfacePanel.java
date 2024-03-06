@@ -6,7 +6,8 @@ import java.awt.event.*;
 
 public class InterfacePanel implements ActionListener{
 	JFrame mainInterface = new JFrame();
-	JPanel painel = new JPanel();
+	JFrame quizInterface = new JFrame();
+	JPanel mainPanel = new JPanel();
 	JButton botao = new JButton("Quiz de Java");
 	
 	InterfacePanel() {
@@ -14,27 +15,28 @@ public class InterfacePanel implements ActionListener{
 	}
 	
 	public void setInterface() {
-		
+		//Propriedades da interface principal
 		mainInterface.setSize(500, 500);
-	
 		
-		
-		mainInterface.add(painel);
+		mainInterface.add(mainPanel);
 		mainInterface.setVisible(true);
 		
 		JLabel title = new JLabel();
 		title.setText("Selecione o quiz que deseja realizar:");
-		painel.add(title);
+		mainPanel.add(title);
 		
-		
-		painel.add(botao);
+		mainPanel.add(botao);
 		
 		botao.addActionListener(this);
+		
+		//Propriedades da interface de quiz
+		quizInterface.setSize(500, 500);
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		painel.setBackground(Color.pink);
+		mainInterface.setVisible(false);
+		quizInterface.setVisible(true);
 		
 	}
 }
