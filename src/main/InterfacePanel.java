@@ -7,18 +7,30 @@ import java.awt.event.*;
 public class InterfacePanel implements ActionListener{
 	JFrame mainInterface = new JFrame();
 	JFrame quizInterface = new JFrame();
+	
 	JPanel mainPanel = new JPanel();
 	JPanel quizPanel = new JPanel();
+	
 	JButton botao = new JButton("Quiz de Java");
 	JButton botaoResp1 = new JButton();
 	JButton botaoResp2 = new JButton();
 	JButton botaoResp3 = new JButton();
-	JButton botaoResp4 = new JButton();
+	JButton botaoRespCorreta = new JButton();
+	
+	String[][] textos = {
+			{"Quem foi o criador do Java?", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
+			{"Quem foi o criador do Java?", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
+			{"Quem foi o criador do Java?", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
+			{"Quem foi o criador do Java?", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
+			{"Quem foi o criador do Java?", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"}
+	};
+	
 	
 	int pontos = 0;
 	
 	InterfacePanel() {
 		setInterface();
+		setQuizInterface(this.textos);
 	}
 	
 	public void setInterface() {
@@ -35,34 +47,51 @@ public class InterfacePanel implements ActionListener{
 		mainPanel.add(botao);
 		
 		botao.addActionListener(this);
-		
+	}
+	
+	public void setQuizInterface(String[][] textos) {
 		//Propriedades da interface de quiz
 		quizInterface.setSize(500, 500);
 		quizInterface.add(quizPanel);
-
-		JLabel question = new JLabel("Quem foi o criador do Java?");
-		botaoResp1.setText("Bill Gates");
+		
+		for (int i = 0; i < 5; i++) {
+			for (int j = 0; j < 5; j++) {
+				System.out.println(i+" "+" "+j+" "+textos[i][j]);
+			}
+		}
+				
+		
+		JLabel question = new JLabel();
+		question.setText(this.textos[0][0]);
+		
+		botaoResp1.setText(this.textos[0][1]);
 		botaoResp1.addActionListener(this);
-		botaoResp1.setActionCommand("1");
-		
-		botaoResp2.setText("Linus Torvald");
+				
+		botaoResp2.setText(this.textos[0][2]);
 		botaoResp2.addActionListener(this);
-		botaoResp2.setActionCommand("2");
-		
-		botaoResp3.setText("James Gosling");
+				
+		botaoResp3.setText(this.textos[0][3]);
 		botaoResp3.addActionListener(this);
-		botaoResp3.setActionCommand("3");
-		
-		botaoResp4.setText("Guido van Rossum");
-		botaoResp4.addActionListener(this);
-		botaoResp4.setActionCommand("4");
-		
+				
+		botaoRespCorreta.setText(this.textos[0][4]);
+		botaoRespCorreta.addActionListener(this);
+				
 		quizPanel.add(question);
 		quizPanel.add(botaoResp1);
 		quizPanel.add(botaoResp2);
 		quizPanel.add(botaoResp3);
-		quizPanel.add(botaoResp4);
+		quizPanel.add(botaoRespCorreta);
+	}
+	
+	public void checkAnswer(ActionEvent e) {
+		if (e.getSource() == botaoRespCorreta) {
+			JOptionPane.showMessageDialog(quizInterface, "resposta correta");
+			pontos = this.pontos + 1;
+		} else {
+			JOptionPane.showMessageDialog(quizInterface, "resposta errada");
+		}
 		
+		setQuizInterface(this.textos);
 	}
 
 	@Override
@@ -71,23 +100,7 @@ public class InterfacePanel implements ActionListener{
 		
 		mainInterface.setVisible(false);
 		quizInterface.setVisible(true);
-
-		switch (actCmd) {
-			case "1":
-				System.out.println("Resposta errada");
-				break;
-			case "2": 
-				System.out.println("Resposta errada");
-				break;
-			case "3": 
-				System.out.println("Resposta correta");
-				this.pontos += 1;
-				System.out.println("Pontos: "+this.pontos);
-				break;
-			case "4":
-				System.out.println("Resposta errada");
-				break;
-		}
 		
+		checkAnswer(e);
 	}
 }
