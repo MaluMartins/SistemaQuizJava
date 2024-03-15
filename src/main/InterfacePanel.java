@@ -29,7 +29,7 @@ public class InterfacePanel implements ActionListener{
 	
 	
 	int pontos = 0;
-	int numQuestao = 1;
+	int numQuestao = 0;
 	
 	InterfacePanel() {
 		setInterface();
@@ -53,22 +53,23 @@ public class InterfacePanel implements ActionListener{
 	}
 	
 	public void setQuizInterface() {
+		
 		//Propriedades da interface de quiz
 		quizInterface.setSize(500, 500);
 		quizInterface.add(quizPanel);
+		quizPanel.setLayout(new GridLayout(5,1));
 		
-		for (int i = 0; i < 5; i++) {
-			for (int j = 0; j < 5; j++) {
-				System.out.println(i+" "+" "+j+" "+textos[i][j]);
-			}
-		}		
 		botaoResp1.addActionListener(this);
+		botaoResp1.setActionCommand("1");
 				
 		botaoResp2.addActionListener(this);
+		botaoResp2.setActionCommand("2");
 				
 		botaoResp3.addActionListener(this);
+		botaoResp3.setActionCommand("3");
 				
 		botaoRespCorreta.addActionListener(this);
+		botaoRespCorreta.setActionCommand("4");
 				
 		quizPanel.add(question);
 		quizPanel.add(botaoResp1);
@@ -76,26 +77,43 @@ public class InterfacePanel implements ActionListener{
 		quizPanel.add(botaoResp3);
 		quizPanel.add(botaoRespCorreta);
 		
-		for (int i=0; i < numQuestao; i++) {
-			question.setText(this.textos[i][0]);
-			botaoResp1.setText(this.textos[i][1]);
-			botaoResp2.setText(this.textos[i][2]);
-			botaoResp3.setText(this.textos[i][3]);
-			botaoRespCorreta.setText(this.textos[i][4]);
-		}
+		numQuestao = 0;
+		displayQuestion();
 	}
 	
+	private void displayQuestion() {
+        if (numQuestao < textos.length) {
+        	question.setText(textos[numQuestao][0]);
+            botaoResp1.setText(textos[numQuestao][1]);
+            botaoResp2.setText(textos[numQuestao][2]);
+            botaoResp3.setText(textos[numQuestao][3]);
+            botaoRespCorreta.setText(textos[numQuestao][4]);
+        } else {
+            JOptionPane.showMessageDialog(quizInterface, "Quiz concluído! Sua pontuação final é: " + pontos);
+            mainInterface.setVisible(true); 
+            quizInterface.dispose(); 
+        }
+    }
 
 	public void checkAnswer(ActionEvent e) {
-		setQuizInterface();
-		if (e.getSource() == botaoRespCorreta) {
-			JOptionPane.showMessageDialog(quizInterface, "resposta correta");
-			pontos = this.pontos + 1;
-		} else {
-			JOptionPane.showMessageDialog(quizInterface, "resposta errada");
-		}
+		String actCmd = e.getActionCommand();
 		
-		this.numQuestao++;
+		switch (actCmd) {
+        case "1":
+        case "2":
+        case "3":
+            JOptionPane.showMessageDialog(quizInterface, "Resposta incorreta");
+            break;
+        case "4":
+            JOptionPane.showMessageDialog(quizInterface, "Resposta correta");
+            pontos++;
+            break;
+    }
+
+		displayQuestion();
+		numQuestao++;
+		
+		
 	}
 
 	@Override
@@ -106,5 +124,6 @@ public class InterfacePanel implements ActionListener{
 		quizInterface.setVisible(true);
 		
 		checkAnswer(e);
+		
 	}
 }
