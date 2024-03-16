@@ -12,118 +12,120 @@ public class InterfacePanel implements ActionListener{
 	JPanel quizPanel = new JPanel();
 	
 	JButton botao = new JButton("Quiz de Java");
-	JButton botaoResp1 = new JButton();
-	JButton botaoResp2 = new JButton();
-	JButton botaoResp3 = new JButton();
-	JButton botaoRespCorreta = new JButton();
+	JButton[] optionsButtons = new JButton[4]; //array de objetos jbutton
 	
-	JLabel question = new JLabel();
+	JLabel questionText = new JLabel();
 	
-	String[][] textos = {
-			{"Quem foi o criador do Java?", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
-			{"Quem foi o criador do Java?1", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
-			{"Quem foi o criador do Java?2", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
-			{"Quem foi o criador do Java?3", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"},
-			{"Quem foi o criador do Java?4", "Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"}
-	};
-	
+	Question[] questions = {
+		    new Question("Quem foi o criador do Java?", 
+		                 new String[]{"Bill Gates", "Linus Torvald", "Guido Von Rossum", "James Gosling"}, 
+		                 "James Gosling"),
+		    new Question ("Qual é o resultado da expressão Java 3 + 5 * 2?", 
+		    			   new String[] {"16", "13", "11", "10"},
+		    			   "13"),
+		    new Question ("Qual é o propósito do modificador de acesso public ao declarar uma classe em Java?", 
+	    			   new String[] {"Torna a classe acessível apenas dentro do mesmo pacote.", "Torna a classe acessível apenas dentro da mesma classe.", "Torna a classe acessível em qualquer lugar, tanto dentro quanto fora do pacote.", "Torna a classe acessível apenas em classes filhas."},
+	    			   "Torna a classe acessível em qualquer lugar, tanto dentro quanto fora do pacote."),
+		    new Question ("Como você cria um objeto em Java?", 
+	    			   new String[] {"Usando o operador new.", "Usando o operador create.", "Usando o método instantiate.", "Usando o operador object."},
+	    			   "Usando o operador new."),
+		    new Question ("Qual estrutura de repetição em Java é mais apropriada quando você precisa executar um bloco de código um número fixo de vezes?", 
+	    			   new String[] {"for", "while", "do-while", "foreach"},
+	    			   "for")
+		};
+
 	
 	int pontos = 0;
 	int numQuestao = 0;
 	
 	InterfacePanel() {
 		setInterface();
-		setQuizInterface();
+		//setQuizInterface();
 	}
 	
 	public void setInterface() {
 		//Propriedades da interface principal
 		mainInterface.setSize(500, 500);
-		
 		mainInterface.add(mainPanel);
-		mainInterface.setVisible(true);
 		
-		JLabel title = new JLabel();
-		title.setText("Selecione o quiz que deseja realizar:");
+		JLabel title = new JLabel("Selecione o quiz que deseja realizar:");
 		mainPanel.add(title);
 		
 		mainPanel.add(botao);
-		
 		botao.addActionListener(this);
+		
+		mainInterface.setVisible(true);
 	}
 	
 	public void setQuizInterface() {
+		mainInterface.setVisible(false);
 		
 		//Propriedades da interface de quiz
-		quizInterface.setSize(500, 500);
+		quizInterface.setSize(600, 500);
 		quizInterface.add(quizPanel);
-		quizPanel.setLayout(new GridLayout(5,1));
+		quizPanel.setLayout(new BorderLayout());
 		
-		botaoResp1.addActionListener(this);
-		botaoResp1.setActionCommand("1");
-				
-		botaoResp2.addActionListener(this);
-		botaoResp2.setActionCommand("2");
-				
-		botaoResp3.addActionListener(this);
-		botaoResp3.setActionCommand("3");
-				
-		botaoRespCorreta.addActionListener(this);
-		botaoRespCorreta.setActionCommand("4");
-				
-		quizPanel.add(question);
-		quizPanel.add(botaoResp1);
-		quizPanel.add(botaoResp2);
-		quizPanel.add(botaoResp3);
-		quizPanel.add(botaoRespCorreta);
+		quizPanel.add(questionText, BorderLayout.NORTH);
+		questionText.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JPanel respostaPanel = new JPanel(new GridLayout(2, 2));
+		respostaPanel.setLayout(new BoxLayout(respostaPanel, BoxLayout.Y_AXIS));
+        quizPanel.add(respostaPanel, BorderLayout.CENTER);
+
+		for (int i = 0; i < optionsButtons.length; i++) {
+            optionsButtons[i] = new JButton();
+            optionsButtons[i].addActionListener(this);
+            
+            optionsButtons[i].setAlignmentX(Component.CENTER_ALIGNMENT);
+            respostaPanel.add(Box.createVerticalStrut(15));
+            
+            respostaPanel.add(optionsButtons[i]);
+        }
 		
 		numQuestao = 0;
 		displayQuestion();
+		quizInterface.setVisible(true);
 	}
 	
-	private void displayQuestion() {
-        if (numQuestao < textos.length) {
-        	question.setText(textos[numQuestao][0]);
-            botaoResp1.setText(textos[numQuestao][1]);
-            botaoResp2.setText(textos[numQuestao][2]);
-            botaoResp3.setText(textos[numQuestao][3]);
-            botaoRespCorreta.setText(textos[numQuestao][4]);
+	public void displayQuestion() {
+        if (numQuestao < questions.length) {
+            Question question = questions[numQuestao];
+            questionText.setText(question.getQuestionText());
+            String[] options = question.getOptions();
+            for (int i = 0; i < optionsButtons.length; i++) {
+                optionsButtons[i].setText(options[i]);
+            }
         } else {
-            JOptionPane.showMessageDialog(quizInterface, "Quiz concluído! Sua pontuação final é: " + pontos);
-            mainInterface.setVisible(true); 
-            quizInterface.dispose(); 
+        	JOptionPane.showMessageDialog(quizInterface, "Quiz concluído! Sua pontuação final é: " + (pontos*100)/questions.length + "%");
+            mainInterface.setVisible(true);
+            quizInterface.dispose();
         }
     }
 
-	public void checkAnswer(ActionEvent e) {
-		String actCmd = e.getActionCommand();
-		
-		switch (actCmd) {
-        case "1":
-        case "2":
-        case "3":
-            JOptionPane.showMessageDialog(quizInterface, "Resposta incorreta");
-            break;
-        case "4":
-            JOptionPane.showMessageDialog(quizInterface, "Resposta correta");
+    public void checkAnswer(String resposta) {
+        Question question = questions[numQuestao];
+        if (resposta.equals(question.getCorrectAnswer())) {
+            JOptionPane.showMessageDialog(quizInterface, "Resposta correta!");
             pontos++;
-            break;
+        } else {
+            JOptionPane.showMessageDialog(quizInterface, "Resposta incorreta!");
+        }
+        numQuestao++;
+        displayQuestion();
     }
-
-		displayQuestion();
-		numQuestao++;
-		
-		
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		String actCmd = e.getActionCommand();
-		
-		mainInterface.setVisible(false);
-		quizInterface.setVisible(true);
-		
-		checkAnswer(e);
+		if (e.getSource() == botao) {
+            setQuizInterface();
+        } else {
+            for (JButton button : optionsButtons) {
+                if (e.getSource() == button) {
+                    checkAnswer(button.getText());
+                    break;
+                }
+            }
+        }
 		
 	}
 }
